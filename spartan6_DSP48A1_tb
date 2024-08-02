@@ -1,0 +1,208 @@
+module spartan6_DSP48A1_tb;
+  // Parameters
+  parameter N = 18;
+  parameter W = 48;
+  parameter Q = 36;
+  parameter O = 8;
+
+  // Inputs
+  reg [O-1:0] opmode;
+  reg dreg, breg, areg, creg, b1_reg, a1_reg, mreg, carryin_reg, carryout_reg, p_reg, op_reg;
+  reg bin_attribute;
+  reg clk;
+  reg [N-1:0] a, b, d;
+  reg [W-1:0] c;
+  reg [N-1:0] bcin;
+  reg [W-1:0] pcin;
+  reg carryin;
+  reg rsta, rstb, rstc, rstd, rstcarry, rstm, rstopmode, rstp;
+  reg ce_a, ce_b, ce_c, ce_d, ce_m, ce_carryin, ce_opmode, ce_p;
+
+  // Outputs
+  wire [Q-1:0] m;
+  wire [W-1:0] p;
+  wire [W-1:0] pcout;
+  wire carryout, carryoutf;
+  wire [N-1:0] bcout;
+
+  // Instantiate the Unit Under Test (UUT)
+  spartan6_DSP48A1 #(
+    .N(N),
+    .W(W),
+    .Q(Q),
+    .O(O)
+  ) uut (
+    .opmode(opmode),
+    .dreg(dreg),
+    .breg(breg),
+    .areg(areg),
+    .creg(creg),
+    .b1_reg(b1_reg),
+    .a1_reg(a1_reg),
+    .mreg(mreg),
+    .carryin_reg(carryin_reg),
+    .carryout_reg(carryout_reg),
+    .p_reg(p_reg),
+    .op_reg(op_reg),
+    .bin_attribute(bin_attribute),
+    .clk(clk),
+    .a(a),
+    .b(b),
+    .d(d),
+    .c(c),
+    .bcin(bcin),
+    .pcin(pcin),
+    .carryin(carryin),
+    .rsta(rsta),
+    .rstb(rstb),
+    .rstc(rstc),
+    .rstd(rstd),
+    .rstcarry(rstcarry),
+    .rstm(rstm),
+    .rstopmode(rstopmode),
+    .rstp(rstp),
+    .m(m),
+    .p(p),
+    .pcout(pcout),
+    .carryout(carryout),
+    .carryoutf(carryoutf),
+    .bcout(bcout),
+    .ce_a(ce_a),
+    .ce_b(ce_b),
+    .ce_c(ce_c),
+    .ce_d(ce_d),
+    .ce_m(ce_m),
+    .ce_carryin(ce_carryin),
+    .ce_opmode(ce_opmode),
+    .ce_p(ce_p)
+  );
+
+  // Clock generation
+  always begin
+    #5 clk = ~clk;  // 10 ns clock period
+  end
+
+  // Initial block for direct test cases
+  initial begin
+    // Initialize Inputs
+    clk = 0;
+    opmode = 8'b00000000;
+    dreg = 0;
+    breg = 0;
+    areg = 0;
+    creg = 0;
+    b1_reg = 0;
+    a1_reg = 0;
+    mreg = 0;
+    carryin_reg = 0;
+    carryout_reg = 0;
+    p_reg = 0;
+    op_reg = 0;
+    bin_attribute = 0;
+    a = 18'b000000000000000001;
+    b = 18'b000000000000000010;
+    d = 18'b000000000000000011;
+    c = 48'b000000000000000000000000000000000000000000000000;
+    bcin = 18'b000000000000000100;
+    pcin = 48'b000000000000000000000000000000000000000000000001;
+    carryin = 0;
+    rsta = 0;
+    rstb = 0;
+    rstc = 0;
+    rstd = 0;
+    rstcarry = 0;
+    rstm = 0;
+    rstopmode = 0;
+    rstp = 0;
+    ce_a = 1;
+    ce_b = 1;
+    ce_c = 1;
+    ce_d = 1;
+    ce_m = 1;
+    ce_carryin = 1;
+    ce_opmode = 1;
+    ce_p = 1;
+
+    // Apply direct test vectors
+    opmode = 8'b00000001; // Set operation mode
+    dreg = 1; // Enable register for d
+    #20;  // Delay to allow the signal to propagate
+
+    opmode = 8'b00000010; // Change operation mode
+    breg = 1; // Enable register for b
+    #20;  // Delay to allow the signal to propagate
+
+    areg = 1; // Enable register for a
+    #20;  // Delay to allow the signal to propagate
+
+    creg = 1; // Enable register for c
+    #20;  // Delay to allow the signal to propagate
+
+    // Add more direct test cases as needed
+    // Example:
+    opmode = 8'b00000011;
+    a = 18'b000000000000000101;
+    #20;  // Delay to allow the signal to propagate
+  end
+
+  // Initial block for random test cases
+  initial begin
+
+    // Generate random test cases
+    repeat (1000) begin
+      opmode = $random;
+      dreg = $random % 2;
+      breg = $random % 2;
+ #40;      
+      areg = $random % 2;
+      creg = $random % 2;
+      b1_reg = $random % 2;
+      a1_reg = $random % 2;
+      mreg = $random % 2;
+      carryin_reg = $random % 2;
+      carryout_reg = $random % 2;
+      p_reg = $random % 2;
+ #40; 
+      op_reg = $random % 2;
+      bin_attribute = $random % 2;
+      a = $random;
+      b = $random;
+      d = $random;
+      c = $random;
+      bcin = $random;
+      pcin = $random;
+      carryin = $random % 2;
+      rsta = $random % 2;
+ #40; 
+      rstb = $random % 2;
+      rstc = $random % 2;
+      rstd = $random % 2;
+      rstcarry = $random % 2;
+      rstm = $random % 2;
+      rstopmode = $random % 2;
+ #40; 
+      rstp = $random % 2;
+      ce_a = $random % 2;
+      ce_b = $random % 2;
+      ce_c = $random % 2;
+      ce_d = $random % 2;
+      ce_m = $random % 2;
+ #40; 
+      ce_carryin = $random % 2;
+      ce_opmode = $random % 2;
+      ce_p = $random % 2;
+      #40; 
+    end
+
+    // Finish simulation after some time
+    #100;
+    $finish;
+  end
+
+  // Monitor signals
+  initial begin
+    $monitor("Time: %0t | opmode: %b | m: %b | p: %b | pcout: %b | carryout: %b | carryoutf: %b | bcout: %b",
+             $time, opmode, m, p, pcout, carryout, carryoutf, bcout);
+  end
+
+endmodule
